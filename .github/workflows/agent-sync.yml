@@ -1,0 +1,62 @@
+# Agent Sync — Push agent definitions to target repositories
+#
+# Triggers:
+#   - On push to main when agents/ or sync/ files change
+#   - Manual dispatch from Actions tab
+#
+# Requires:
+#   - AGENT_SYNC_TOKEN secret: a fine-grained PAT with Contents read/write on target repos
+
+name: Agent Sync
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "agents/**"
+      - "sync/config.yaml"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (preview only, no changes)"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+      target:
+        description: "Sync a specific repo (owner/repo) or leave blank for all"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Run agent sync
+        env:
+          GITHUB_TOKEN: ${{ secrets.AGENT_SYNC_TOKEN }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          if [ -n "${{ inputs.target }}" ]; then
+            ARGS="$ARGS --target ${{ inputs.target }}"
+          fi
+          python sync/agent_sync.py --verbose $ARGS

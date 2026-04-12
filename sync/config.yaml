@@ -1,0 +1,38 @@
+# Agent Sync Configuration
+# Defines which agent definitions are synced to which repositories.
+#
+# Each target entry specifies:
+#   - repo: owner/repo format
+#   - agents: list of agent files to sync (from agents/ directory)
+#   - target_path: where to place agent files in the target repo (default: .github/agents/)
+#   - branch: target branch to update (default: main)
+#   - strategy: how to handle existing files — "overwrite" or "skip" (default: overwrite)
+
+defaults:
+  target_path: ".github/agents/"
+  branch: "main"
+  strategy: "overwrite"
+  commit_message_prefix: "[agent-sync]"
+
+# Source of truth — this repository
+source:
+  repo: "lundgren-greg/lundgren-greg"
+  agents_dir: "agents/"
+
+# Target repositories to sync agent definitions to.
+# Add your repos below. Example:
+#
+# targets:
+#   - repo: "lundgren-greg/quake2-server"
+#     agents:
+#       - great-agent.md
+#     target_path: ".github/agents/"
+#     branch: "main"
+#
+#   - repo: "lundgren-greg/another-project"
+#     agents:
+#       - great-agent.md
+#     target_path: ".copilot/agents/"
+#     strategy: "overwrite"
+
+targets: []
