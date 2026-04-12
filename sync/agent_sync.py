@@ -40,10 +40,17 @@ except ImportError:
 
 API_BASE = "https://api.github.com"
 
+SYNC_DEFAULTS = {
+    "target_path": ".github/agents/",
+    "branch": "main",
+    "strategy": "overwrite",
+    "commit_message_prefix": "[agent-sync]",
+}
+
 
 def github_headers(token: str) -> dict:
     return {
-        "Authorization": f"token {token}",
+        "Authorization": f"Bearer {token}",
         "Accept": "application/vnd.github.v3+json",
         "User-Agent": "agent-sync/1.0",
     }
@@ -82,14 +89,9 @@ def resolve_defaults(config: dict) -> dict:
     """Merge per-target settings with defaults."""
     defaults = config.get("defaults", {})
     for target in config.get("targets", []):
-        for key in ("target_path", "branch", "strategy", "commit_message_prefix"):
+        for key in SYNC_DEFAULTS:
             if key not in target:
-                target[key] = defaults.get(key, {
-                    "target_path": ".github/agents/",
-                    "branch": "main",
-                    "strategy": "overwrite",
-                    "commit_message_prefix": "[agent-sync]",
-                }[key])
+                target[key] = defaults.get(key, SYNC_DEFAULTS[key])
     return config
 
 

@@ -31,25 +31,33 @@ After completing any development task:
 
 ## Development Workflow
 
-For source code changes (C game DLL merge, patches, etc.):
+For source code changes:
 
-1. Read the target file and the upstream reference before editing
-2. Apply changes with clear `// freeze` comment markers per project conventions
-3. After patching, attempt a compile to catch errors early
-4. Fix any compile errors before moving to the next file
+1. Read the target file and any upstream references before editing
+2. Apply changes following project-specific code style conventions
+3. After patching, attempt a build to catch errors early
+4. Fix any build errors before moving to the next file
 
 For build/test cycles:
 
-1. Run `.\scripts\Build-GameDLL.ps1` after source changes
+1. Run the project's build script after source changes
 2. If build fails, diagnose and fix — don't skip to next task
 3. Log build results (success/failure/warnings) in commit messages
+
+<!-- PROJECT-SPECIFIC OVERRIDES
+   Override the generic workflow above with project-specific commands.
+   For example, in a Quake 2 project you might add:
+     Build command: .\scripts\Build-GameDLL.ps1
+     Code markers: // freeze
+     Read-only dirs: upstream/
+-->
 
 ## Constraints
 
 - DO NOT skip tracking updates — this is the agent's defining behavior
 - DO NOT mark items complete in FEATURES.md unless the work is actually done and verified
-- DO NOT modify upstream/ files — those are read-only references
-- FOLLOW the code style conventions in `.github/copilot-instructions.md`
+- DO NOT modify read-only reference files (e.g., upstream sources)
+- FOLLOW the code style conventions defined in the project
 
 ## Output Format
 
