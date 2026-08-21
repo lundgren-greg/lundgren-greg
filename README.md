@@ -8,7 +8,36 @@
 
 Nine numbered PowerShell macros that survive closing the terminal. After I run a command worth keeping, `sm3` saves it. `rm3` replays it in any later session. `wm3` shows what’s in the slot without running it.
 
-The flow is: run the command, then `smN`. Slots are `1`–`9`. Bindings persist in `~/profile/macros.json`.
+This is for commands that are too specific to become a permanent alias, but too annoying to retype. `Ctrl+R` history is chronological and full of near-misses. These are nine sticky slots you choose.
+
+The flow is: run the command, then `smN`. Slots are `1`–`9`. Bindings persist in `~/profile/macros.json`. Overwrite a slot by running a new command and `smN` again.
+
+### Why it helps
+
+A test filter you just got right. You don’t want that as a forever alias, and you don’t want to hunt it in history tomorrow.
+
+```powershell
+dotnet test .\tests\Foo.Tests --filter "FullyQualifiedName~Portage" -v n
+sm1          # save the last command into slot 1
+# close the terminal, come back next day
+wm1          # peek first if you’re not sure what’s in the slot
+rm1          # replay it
+```
+
+A one-liner for the repo you’re in this week.
+
+```powershell
+gh pr checks --watch
+sm2
+rm2          # later, same watch, no retyping
+```
+
+A long remote or container command.
+
+```powershell
+ssh user@build-box 'cd /srv/app && docker compose logs -f --tail 100 api'
+sm3
+```
 
 | | Save last command | Replay | Peek |
 | --- | --- | --- | --- |
