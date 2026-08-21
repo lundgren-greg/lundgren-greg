@@ -46,48 +46,12 @@ sm3
 | … | … | … | … |
 | Slot 9 | `sm9` | `rm9` | `wm9` |
 
-Drop this in your PowerShell 7 `$PROFILE`:
+The script lives in [pwsh-persistent-macros](https://github.com/lundgren-greg/pwsh-persistent-macros). Clone it and drop this in your PowerShell 7 `$PROFILE`:
 
 ```powershell
-# Custom Persistent Macros
-$macroFile = Join-Path $HOME 'profile\macros.json'
-
-if (Test-Path $macroFile) {
-    $macros = Get-Content $macroFile -Raw | ConvertFrom-Json -AsHashtable
-}
-else {
-    $macros = @{}
-}
-
-function Save-MacrosToDisk {
-    # Convert keys to strings so JSON is happy
-    $dir = Split-Path -Parent $macroFile
-    if (-not (Test-Path $dir)) {
-        New-Item -ItemType Directory -Path $dir -Force | Out-Null
-    }
-    $toSave = @{}
-    $macros.GetEnumerator() | ForEach-Object { $toSave["$($_.Key)"] = $_.Value }
-    $toSave | ConvertTo-Json | Set-Content $macroFile
-}
-
-1..9 | ForEach-Object {
-    $n = "$_"   # string key
-    Set-Item -Path "function:sm$n" -Value {
-        $macros[$n] = (Get-History -Count 1).CommandLine
-        Save-MacrosToDisk
-    }.GetNewClosure()
-
-    Set-Item -Path "function:rm$n" -Value {
-        if ($macros[$n]) { Invoke-Expression $macros[$n] } else { "No macro $n" }
-    }.GetNewClosure()
-
-    Set-Item -Path "function:wm$n" -Value {
-        if ($macros[$n]) { $macros[$n] } else { "No macro $n" }
-    }.GetNewClosure()
-}
+$persistentMacros = Join-Path $env:REPOS 'pwsh-persistent-macros\Register-PersistentMacros.ps1'
+if (Test-Path $persistentMacros) { . $persistentMacros }
 ```
-
-Same snippet as a file: [`powershell/persistent-macros.ps1`](powershell/persistent-macros.ps1).
 
 <!---
 greg-lundgren/greg-lundgren is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
