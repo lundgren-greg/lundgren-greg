@@ -12,6 +12,13 @@ This is for commands that are too specific to become a permanent alias, but too 
 
 The flow is: run the command, then `smN`. Slots are `1`–`9`. Bindings persist in `~/profile/macros.json`. Overwrite a slot by running a new command and `smN` again.
 
+Or save a command directly without running it first:
+
+```powershell
+sm3 -Cmd 'Get-Date -Format yyyy-MM-dd'
+wm3          # peek before replaying it later
+```
+
 ### Why it helps
 
 A test filter you just got right. You don’t want that as a forever alias, and you don’t want to hunt it in history tomorrow.
